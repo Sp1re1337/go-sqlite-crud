@@ -8,12 +8,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type User struct {
-	ID   int
-  Name string
-  Age  int
-}
-
 func main() {
 	db, err := sql.Open("sqlite3", "./example.db")
 	if err != nil {
