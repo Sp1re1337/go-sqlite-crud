@@ -1,49 +1,21 @@
 package main
 
 import (
-	"database/sql"
-  "fmt"
-  "tgsql-example/database"
-  "log"
-	_ "github.com/mattn/go-sqlite3"
+	"log"
+    "telegram-bot-sql-example/bot"
+    "telegram-bot-sql-example/database"
 )
 
-type User struct {
-	ID   int
-  Name string
-  Age  int
-}
-
 func main() {
-	db, err := sql.Open("sqlite3", "./example.db")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+    // Ініціалізуємо базу даних
+    err := database.InitDB()
+    if err != nil {
+        log.Fatalf("Помилка ініціалізації бази даних: %v", err)
+    }
 
-	database.CreateTable(db)
-
-	database.AddUser(db, "Вася", 28)
-  database.AddUser(db, "Коля", 24)
-
-	users, err := database.GetUsers(db)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("Список користувачів:")
-	for _, user := range users {
-		fmt.Printf("ID: %d, Ім'я: %s, Вік: %d\n", user.ID, user.Name, user.Age)
-	}
-
-	database.DeleteUser(db, 1)
-
-	users, err = database.GetUsers(db)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Оновлений список користувачів:")
-	for _, user := range users {
-		fmt.Printf("ID: %d, Ім'я: %s, Вік: %d\n", user.ID, user.Name, user.Age)
-	}
+    // Запускаємо Telegram бота
+    err = bot.StartBot()
+    if err != nil {
+        log.Fatalf("Помилка запуску бота: %v", err)
+    }
 }
